@@ -102,6 +102,11 @@ int merge(struct reb_simulation* const sim, struct rebx_collision_resolve* const
     struct reb_particle* pi = &(sim->particles[c.p1]); // First object in collision
     struct reb_particle* pj = &(sim->particles[c.p2]); // Second object in collison
 
+    //Get the maximum hash assigned to particles, so we can add hash of fragments after that
+    struct rebx_extras* rebx = rebx_attach(sim);
+    double* max_hash_assigned = rebx_get_param(rebx, collision_resolve->ap, "fc_max_hash");
+    *max_hash_assigned += 1;
+
     double invmass = 1.0/(pi->m + pj->m);
 
     // Merge by conserving mass, volume and momentum
@@ -158,6 +163,11 @@ int make_fragments(struct reb_simulation* const sim, struct rebx_collision_resol
     
     //n_frag is total number of fragments
     double n_frag = n_small_frag + n_big_frag;
+
+    //Get the maximum hash assigned to particles, so we can add hash of fragments after that
+    struct rebx_extras* rebx = rebx_attach(sim);
+    double* max_hash_assigned = rebx_get_param(rebx, collision_resolve->ap, "fc_max_hash");
+    *max_hash_assigned += n_frag;
 
     //Define mxsum variable to keep track of center of mass (mass times position)
     double mxsum[3] = {0, 0, 0}; // For x, y, z
@@ -276,6 +286,7 @@ int make_fragments(struct reb_simulation* const sim, struct rebx_collision_resol
     //Fragments are placed with equal angular distances of each other (theta_sep).  
     //Add big fragment, if exists
     if (n_big_frag == 1){
+
         struct reb_particle big_frag = {0};
         big_frag.m = Mslr;
 
@@ -486,6 +497,10 @@ int rebx_fragmenting_collisions(struct reb_simulation* const sim, struct rebx_co
     struct reb_particle* target;     
     struct reb_particle* projectile; 
 
+    //get max hash assigned
+    struct rebx_extras* rebx = rebx_attach(sim);
+    double* max_hash_assigned = rebx_get_param(rebx, collision_resolve->ap, "fc_max_hash");
+
     //Object with the higher mass will be the target, and object with lower mass will be the projectile
     if (pi->m >= pj->m){
         target = pi;    
@@ -657,7 +672,8 @@ if(print_flag == 1){
     fprintf(of, "%e,", target->r);
     fprintf(of, "%u,", projectile->hash);
     fprintf(of, "%e,", projectile->m);
-    fprintf(of, "%e,", projectile->r);
+    fprintf(of, "%e", projectile->r);
+    fprintf(of, "%u", *max_hash_assigned);
     fprintf(of, "\n");   
     fclose(of);
 }

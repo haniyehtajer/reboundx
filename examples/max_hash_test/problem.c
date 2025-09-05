@@ -39,8 +39,9 @@ void test_erosion(int type){
 
     struct rebx_extras* rebx = rebx_attach(sim);
     struct rebx_collision_resolve* fragmenting = rebx_load_collision_resolve(rebx, "fragmenting_collisions");
+    rebx_set_param_double(rebx, &fragmenting->ap, "fc_max_hash", 100);
     rebx_add_collision_resolve(rebx, fragmenting);
-    
+
     reb_simulation_integrate(sim, 1);
 }
     
