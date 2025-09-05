@@ -144,7 +144,6 @@ void rebx_register_default_params(struct rebx_extras* rebx){
     rebx_register_param(rebx, "lt_p_haty", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "lt_p_hatz", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "lt_c", REBX_TYPE_DOUBLE);
-    rebx_register_param(rebx, "fc_hash", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "fc_max_hash", REBX_TYPE_DOUBLE);
 }
 
