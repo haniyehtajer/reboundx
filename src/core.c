@@ -39,7 +39,7 @@
 #define str(s) #s
 
 const char* rebx_build_str = __DATE__ " " __TIME__; // Date and time build string.
-const char* rebx_version_str = "4.4.1";         // **VERSIONLINE** This line gets updated automatically. Do not edit manually.
+const char* rebx_version_str = "4.4.2";         // **VERSIONLINE** This line gets updated automatically. Do not edit manually.
 const char* rebx_githash_str = STRINGIFY(REBXGITHASH);             // This line gets updated automatically. Do not edit manually.
 
 
@@ -144,6 +144,14 @@ void rebx_register_default_params(struct rebx_extras* rebx){
     rebx_register_param(rebx, "lt_p_haty", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "lt_p_hatz", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "lt_c", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "fc_id_max", REBX_TYPE_INT);
+    rebx_register_param(rebx, "fc_id", REBX_TYPE_INT);
+    rebx_register_param(rebx, "fc_min_frag_mass", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "fc_separation_distance_scale", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "fc_rho1", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "fc_cstar", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "fc_particle_list_file", REBX_TYPE_POINTER);
+    rebx_register_param(rebx, "fc_collision_report_file", REBX_TYPE_POINTER);
 }
 
 void rebx_register_param(struct rebx_extras* const rebx, const char* name, enum rebx_param_type type){
@@ -1075,14 +1083,14 @@ void rebx_additional_forces(struct reb_simulation* sim){
     }
 }
 
-int rebx_collision_resolver(struct reb_simulation* const sim, struct reb_collision collision){
+enum REB_COLLISION_RESOLVE_OUTCOME rebx_collision_resolver(struct reb_simulation* const sim, struct reb_collision collision){
     struct rebx_extras* rebx = sim->extras;
     struct rebx_collision_resolve* collision_resolve = rebx->collision_resolve;
     if (collision_resolve){
         return collision_resolve->collision_resolve(sim, collision_resolve, collision);
     }{
         reb_simulation_warning(sim, "REBOUNDx: Collision resolve function pointer not set.");
-        return 0;
+        return REB_COLLISION_RESOLVE_OUTCOME_REMOVE_NONE;
     }
 }
 

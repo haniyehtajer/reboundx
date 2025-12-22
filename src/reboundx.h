@@ -227,7 +227,7 @@ struct rebx_collision_resolve{
     struct rebx_node* ap;       ///< Additional parameters linked list
     struct reb_simulation* sim; ///< Pointer to attached sim. Needed for error checks
     // See comments in params.py in __init__
-    int (*collision_resolve) (struct reb_simulation* const sim, struct rebx_collision_resolve* const collision_resolve, struct reb_collision); ///< Function pointer to collision resolve function
+    enum REB_COLLISION_RESOLVE_OUTCOME (*collision_resolve) (struct reb_simulation* const sim, struct rebx_collision_resolve* const collision_resolve, struct reb_collision); ///< Function pointer to collision resolve function
 };
 
 /**
@@ -586,6 +586,10 @@ double rebx_central_force_potential(struct rebx_extras* const rebx);
  * @return Potential corresponding to the effect from all particles of their additional gravity field harmonics
  */
 double rebx_gravitational_harmonics_potential(struct rebx_extras* const rebx);
+
+
+
+int rebx_fragmenting_collisions_set_new_id(struct reb_simulation* sim, struct rebx_collision_resolve* const collision_resolve, struct reb_particle* p);
 
 /** @} */
 /** @} */
